@@ -4,6 +4,16 @@ const userSubscriptions = {};
 
 const categories = ["Dashboard", "Watchlist", "Position", "Investment", "Buy-Sell", "Option-Chain"];
 
+
+const exceptionalSymbols = new Set([
+    "NSE:NIFTY50-INDEX",
+    "NSE:NIFTYBANK-INDEX",
+    "BSE:SENSEX-INDEX",
+    "NSE:FINNIFTY-INDEX",
+    "NSE:MIDCPNIFTY-INDEX",
+    "BSE:BANKEX-INDEX"
+]);
+
 function initializeUser(userId) {
     if (!userSubscriptions[userId]) {
         userSubscriptions[userId] = {};
