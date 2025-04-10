@@ -2,7 +2,7 @@
 const userStreams = {};
 const userSubscriptions = {};
 
-const categories = ["Dashboard", "Watchlist", "Position", "Investment", "buy-Sell", "Option-chain"];
+const categories = ["Dashboard", "Watchlist", "Position", "Investment", "Buy-Sell", "Option-Chain"];
 
 function initializeUser(userId) {
     if (!userSubscriptions[userId]) {
@@ -62,15 +62,43 @@ function startUserStream(userId, res, ltpMap1, ltpMap2, ltpMap3) {
     });
 }
 
+// function subscribeSymbols(userId, category, symbols) {
+//     initializeUser(userId);
+//     symbols.forEach(sym => userSubscriptions[userId][category].add(sym.toUpperCase()));
+// }
+
+// function removeSymbols(userId, category, symbols) {
+//     initializeUser(userId);
+//     symbols.forEach(sym => userSubscriptions[userId][category].delete(sym.toUpperCase()));
+// }
+
+
 function subscribeSymbols(userId, category, symbols) {
     initializeUser(userId);
+
+    if (!userSubscriptions[userId]) {
+        userSubscriptions[userId] = {};
+    }
+
+    if (!userSubscriptions[userId][category]) {
+        userSubscriptions[userId][category] = new Set();
+    }
+
     symbols.forEach(sym => userSubscriptions[userId][category].add(sym.toUpperCase()));
 }
 
+
 function removeSymbols(userId, category, symbols) {
     initializeUser(userId);
-    symbols.forEach(sym => userSubscriptions[userId][category].delete(sym.toUpperCase()));
+
+    if (
+        userSubscriptions[userId] &&
+        userSubscriptions[userId][category]
+    ) {
+        symbols.forEach(sym => userSubscriptions[userId][category].delete(sym.toUpperCase()));
+    }
 }
+
 
 function cancelUserStream(userId) {
     if (userStreams[userId]) {
