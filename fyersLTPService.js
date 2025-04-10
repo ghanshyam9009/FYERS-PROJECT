@@ -22,8 +22,25 @@ function readSymbolsFromCSV(filePath) {
     });
 }
 
+const exceptionalSymbols = new Set([
+    "NSE:NIFTY50-INDEX",
+    "NSE:NIFTYBANK-INDEX",
+    "BSE:SENSEX-INDEX",
+    "NSE:FINNIFTY-INDEX",
+    "NSE:MIDCPNIFTY-INDEX",
+    "BSE:BANKEX-INDEX"
+]);
+
 function categorizeAndUpdate(symbol, ltp) {
     const upper = symbol.toUpperCase();
+
+    // Handle exceptions first
+    if (exceptionalSymbols.has(upper)) {
+        ltpMap3[upper] = ltp;
+        return;
+    }
+
+    // Normal categorization
     if (upper.includes("NIFTY") && !upper.includes("BANK") && !upper.includes("FIN")) {
         ltpMap1[upper] = ltp;
     } else if (upper.includes("SENSEX")) {
@@ -33,16 +50,15 @@ function categorizeAndUpdate(symbol, ltp) {
     } else {
         ltpMap3[upper] = ltp;
     }
-
-    // Debug print
-    // console.log(`[SOCKET] ${upper}: ₹${ltp}`);
 }
+
 
 function handleSocket(symbols) {
     fyersSocket.on("message", (msg) => {
         if (msg.symbol && msg.ltp !== undefined) {
-            categorizeAndUpdate(msg.symbol, msg.ltp);
+            categorizeAndUpdate(msg.symbol, msg.ltp,);
         }
+        
     });
 
     fyersSocket.on("connect", () => {

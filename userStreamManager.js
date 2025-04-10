@@ -16,11 +16,16 @@ function initializeUser(userId) {
 function detectMap(symbol, ltpMap1, ltpMap2, ltpMap3) {
     const sym = symbol.toUpperCase();
 
+    // Force lookup in ltpMap3 if symbol is an exception
+    if (exceptionalSymbols.has(sym)) return ltpMap3;
+
     if (sym.includes("NIFTY") && !sym.includes("BANK") && !sym.includes("FIN")) return ltpMap1;
     if (sym.includes("SENSEX")) return ltpMap1;
     if (sym.includes("BANKNIFTY") || sym.includes("FINNIFTY")) return ltpMap2;
+
     return ltpMap3;
 }
+
 
 function startUserStream(userId, res, ltpMap1, ltpMap2, ltpMap3) {
     initializeUser(userId);
