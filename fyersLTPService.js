@@ -73,14 +73,14 @@ function handleSocket(symbols) {
 function printAllLTPs() {
     console.clear();
     console.log("\n========== 🟢 BANKNIFTY & FINNIFTY ==========");
-    for (const [symbol, { ltp, ch, chp }] of Object.entries(ltpMap2)) {
+    for (const [symbol, { ltp, ch, chp }] of Object.entries(ltpMap1)) {
         console.log(`${symbol}: ₹${ltp} (CH: ₹${ch}, CHP: ${chp}%)`);
     }
 }
 
 async function initializeFyersConnection() {
     const allSymbols = [
-        ...(await readSymbolsFromCSV("./sensex-50.csv")),
+        ...(await readSymbolsFromCSV("./NIFTY.csv")),
         ...(await readSymbolsFromCSV("./sensex-50.csv")),
         ...(await readSymbolsFromCSV("./BANKNIFTY.csv")),
         ...(await readSymbolsFromCSV("./FINNIFTY.csv")),
