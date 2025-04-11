@@ -5,7 +5,7 @@ const fs = require("fs");
 const csv = require("csv-parser");
 const { fyersDataSocket } = require("fyers-api-v3");
 
-const fyersSocket = fyersDataSocket.getInstance("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCbjkxaTNsUlk3ZUVpd051VXBQRXNuUl9DcFFIZ2ZScWR4c05iZ0lMSVBRQ0VYblFPRkhWNUphcmk1ejlkN0tCN3pFdG1abHlycVVGRnpGS0Zxa2hTdjBGUG9KVE00dzBXTVlOMUlERVp2ME85LXJNRT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlZjI1MzIwYmIxOWI1ZDVhZTJlZWM3MjhmNTIwYTVmZjQyYjM0MWJmZjU5YmI0ZWYwOGUwNDRkYiIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWVUwMjc2MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ0MzMxNDAwLCJpYXQiOjE3NDQyNjMzNTEsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NDI2MzM1MSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.rIS-VC7QckxTKm1S7AwqYVDo0E9YYxYwD-10SrjVhVw");
+const fyersSocket = fyersDataSocket.getInstance("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCbi1JM2p4ZHpDOWYtQVAySVVsejZrNWxVaG9lZWpFaUgzWF9kbXg1ZzFqZjU0TWdVRjI1VlJxUGVpdlZuMHlMNlhHX1ZCTDlkbWs3OU9lQ0F5WlpOUFdTSmNKUGhMdmtoVW1BbjRVNG1ORXp1VVBTOD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlODVkZDU4NWI5NDIxMzJhMTE4MWEzMDFhZTI3NDkyZDZiODE1Zjc0MzQ2ZGFiNzhlNWViODNhMSIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWUE0NzI0MyIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ0NDE3ODAwLCJpYXQiOjE3NDQzNDI0OTksImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NDM0MjQ5OSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.FRcC1ekf3A8UTqXH4oaQ73_y7qb919bDx_I5s3t2ojw");
 
 const ltpMap1 = {}; // NIFTY & SENSEX
 const ltpMap2 = {}; // BANKNIFTY & FINNIFTY
@@ -31,32 +31,32 @@ const exceptionalSymbols = new Set([
     "BSE:BANKEX-INDEX"
 ]);
 
-function categorizeAndUpdate(symbol, ltp) {
+function categorizeAndUpdate(symbol, ltp, ch, chp) {
     const upper = symbol.toUpperCase();
+    const data = { ltp, ch, chp };
 
-    // Handle exceptions first
     if (exceptionalSymbols.has(upper)) {
-        ltpMap3[upper] = ltp;
+        ltpMap3[upper] = data;
         return;
     }
 
-    // Normal categorization
     if (upper.includes("NIFTY") && !upper.includes("BANK") && !upper.includes("FIN")) {
-        ltpMap1[upper] = ltp;
+        ltpMap1[upper] = data;
     } else if (upper.includes("SENSEX")) {
-        ltpMap1[upper] = ltp;
+        ltpMap1[upper] = data;
     } else if (upper.includes("BANKNIFTY") || upper.includes("FINNIFTY")) {
-        ltpMap2[upper] = ltp;
+        ltpMap2[upper] = data;
     } else {
-        ltpMap3[upper] = ltp;
+        ltpMap3[upper] = data;
     }
 }
+
 
 
 function handleSocket(symbols) {
     fyersSocket.on("message", (msg) => {
         if (msg.symbol && msg.ltp !== undefined) {
-            categorizeAndUpdate(msg.symbol, msg.ltp,);
+            categorizeAndUpdate(msg.symbol, msg.ltp, msg.ch, msg.chp);
         }
         
     });
@@ -73,8 +73,8 @@ function handleSocket(symbols) {
 function printAllLTPs() {
     console.clear();
     console.log("\n========== 🟢 BANKNIFTY & FINNIFTY ==========");
-    for (const [symbol, ltp] of Object.entries(ltpMap1)) {
-        console.log(`${symbol}: ₹${ltp}`);
+    for (const [symbol, { ltp, ch, chp }] of Object.entries(ltpMap2)) {
+        console.log(`${symbol}: ₹${ltp} (CH: ₹${ch}, CHP: ${chp}%)`);
     }
 }
 

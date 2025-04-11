@@ -52,15 +52,17 @@ function startUserStream(userId, res, ltpMap1, ltpMap2, ltpMap3) {
             result[category] = Array.from(symbols).map(sym => {
                 const upperSym = sym.toUpperCase();
                 const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
-                const ltp = map[upperSym];
+                const data = map[upperSym];
 
-                if (ltp === undefined) {
+                if (data === undefined) {
                     console.log(`[DEBUG] 🔍 Lookup failed: ${upperSym} in ${Object.keys(map)[0]}`);
                 }
 
                 return {
                     symbol: upperSym,
-                    ltp: ltp ?? null
+                    ltp: data?.ltp ?? null,
+                    ch: data?.ch ?? null,
+                    chp: data?.chp ?? null
                 };
             });
         }
