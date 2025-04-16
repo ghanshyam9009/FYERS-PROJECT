@@ -1,11 +1,9 @@
 
-
-
 const fs = require("fs");
 const csv = require("csv-parser");
 const { fyersDataSocket } = require("fyers-api-v3");
 
-const fyersSocket = fyersDataSocket.getInstance("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCbi1JM2p4ZHpDOWYtQVAySVVsejZrNWxVaG9lZWpFaUgzWF9kbXg1ZzFqZjU0TWdVRjI1VlJxUGVpdlZuMHlMNlhHX1ZCTDlkbWs3OU9lQ0F5WlpOUFdTSmNKUGhMdmtoVW1BbjRVNG1ORXp1VVBTOD0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlODVkZDU4NWI5NDIxMzJhMTE4MWEzMDFhZTI3NDkyZDZiODE1Zjc0MzQ2ZGFiNzhlNWViODNhMSIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWUE0NzI0MyIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ0NDE3ODAwLCJpYXQiOjE3NDQzNDI0OTksImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NDM0MjQ5OSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.FRcC1ekf3A8UTqXH4oaQ73_y7qb919bDx_I5s3t2ojw");
+const fyersSocket = fyersDataSocket.getInstance("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCbl96U1Jwa2psUEtPTy1Fd3h1NEVkbXVHaEdSZk9HZHJwZVNMY1g4RG9iVXVaU3pEZ0NIWXdxcnNHYk9zZjV5ajE5NXF3X3NYdVp3Vm4yckcweVctWWNRNGpRNzY4ZFhiNFA5T1I5NHVJYURDM3BRWT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlODVkZDU4NWI5NDIxMzJhMTE4MWEzMDFhZTI3NDkyZDZiODE1Zjc0MzQ2ZGFiNzhlNWViODNhMSIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWUE0NzI0MyIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ0ODQ5ODAwLCJpYXQiOjE3NDQ3NzgzODUsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NDc3ODM4NSwic3ViIjoiYWNjZXNzX3Rva2VuIn0.pqfwluPHl8XA5FvM6ChbEX_m5V0Eu4LceoCKKiEUsdw");
 
 const ltpMap1 = {}; // NIFTY & SENSEX
 const ltpMap2 = {}; // BANKNIFTY & FINNIFTY
@@ -56,6 +54,7 @@ function categorizeAndUpdate(symbol, ltp, ch, chp) {
 function handleSocket(symbols) {
     fyersSocket.on("message", (msg) => {
         if (msg.symbol && msg.ltp !== undefined) {
+            // console.log(msg)
             categorizeAndUpdate(msg.symbol, msg.ltp, msg.ch, msg.chp);
         }
         
@@ -87,7 +86,7 @@ async function initializeFyersConnection() {
         ...(await readSymbolsFromCSV("./EQUITY.csv"))
     ];
     handleSocket(allSymbols);
-    setInterval(printAllLTPs, 5000); // Live LTP printout
+    // setInterval(printAllLTPs, 5000); // Live LTP printout
 }
 
 module.exports = {
