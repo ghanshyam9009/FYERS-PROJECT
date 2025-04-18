@@ -11,7 +11,7 @@ async function fetchLtpFromFyers(symbol) {
             chp: response.data.chp
         };
     } catch (err) {
-        console.error(`[ERROR] Failed to fetch from Fyers for ${symbol}:`, err.message);
+        // console.error(`[ERROR] Failed to fetch from Fyers for ${symbol}:`, err.message);
         return null;
     }
 }
@@ -21,7 +21,7 @@ async function handleMissingSymbol(userId, symbol, mapToUpdate) {
     const ltpData = await fetchLtpFromFyers(symbol);
     if (ltpData) {
         mapToUpdate[symbol] = ltpData;
-        console.log(`[INFO] 🔁 Updated ${symbol} with live LTP from Fyers for user ${userId}`);
+        // console.log(`[INFO] 🔁 Updated ${symbol} with live LTP from Fyers for user ${userId}`);
     }
 }
 
