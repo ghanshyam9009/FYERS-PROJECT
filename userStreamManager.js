@@ -175,7 +175,7 @@ function initializeUser(userId) {
 
 function detectMap(symbol, ltpMap1, ltpMap2, ltpMap3) {
     const sym = symbol.toUpperCase();
-    console.log(sym)
+    // console.log(sym)
     if (exceptionalSymbols.has(sym)) return ltpMap3;
     if (sym.includes("NIFTY") && !sym.includes("BANK") && !sym.includes("FIN")) return ltpMap1;
     if (sym.includes("SENSEX")) return ltpMap1;
@@ -183,7 +183,7 @@ function detectMap(symbol, ltpMap1, ltpMap2, ltpMap3) {
 
 
 
-    console.log( "yaii",ltpMap3)
+    // console.log( "yaii",ltpMap3)
     return ltpMap3;
 }
 
@@ -202,7 +202,7 @@ function startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3) {
 
                 if (!data) {
                     handleMissingSymbol(userId, upperSym, map);
-                    console.log(`[DEBUG] 🔍 Lookup failed: ${upperSym}, attempting fetch from Fyers`);
+                    // console.log(`[DEBUG] 🔍 Lookup failed: ${upperSym}, attempting fetch from Fyers`);
                 }
 
                 return {
@@ -246,14 +246,14 @@ function subscribeSymbols(userId, category, symbols, ltpMap1, ltpMap2, ltpMap3) 
         // Check if symbol exists in the current map
         const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
         console.log(map)
-        console.log(ltpMap3)
+        // console.log(ltpMap3)
         // Ensure map is defined and contains the symbol
         if (map && map[upperSym]) {
             // Symbol exists in the map
-            console.log(`Symbol ${upperSym} found in map.`);
+            // console.log(`Symbol ${upperSym} found in map.`);
         } else {
             // Handle missing symbol in map
-            console.log("invalid symbol")
+            // console.log("invalid symbol")
             // handleMissingSymbol(userId, upperSym, map);
         }
     });
@@ -269,11 +269,11 @@ function removeSymbols(userId, category, symbols, ltpMap1, ltpMap2, ltpMap3) {
 
             const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
             if (!map || !map[upperSym]) {
-                console.warn(`⚠️ Tried removing invalid/missing symbol: ${upperSym}`);
+                // console.warn(`⚠️ Tried removing invalid/missing symbol: ${upperSym}`);
             }
         });
     } else {
-        console.warn(`⚠️ No existing subscription for user: ${userId}, category: ${category}`);
+        // console.warn(`⚠️ No existing subscription for user: ${userId}, category: ${category}`);
     }
 }
 
