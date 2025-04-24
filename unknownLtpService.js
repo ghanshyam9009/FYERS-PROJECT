@@ -4,7 +4,7 @@
 import { fyersDataSocket } from "fyers-api-v3";
 import { ltpMap1, ltpMap2, ltpMap3 } from "./fyersLTPService.js";
 
-const alternateToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCb0NjTVdCcjhxeGxucTdySHpvTnNDOGU4eDJ4LVphQlBtb1Z6UGF3X3Yxc2tPUHFJTHVpbDFGTlN2RU5INC04SVBveUI1dW5OeTlDbTdrX0pHcXdiVkZLWTI3UzNzWFNYWWlWZjJ1RTdZS1FPS3hhUT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlZjI1MzIwYmIxOWI1ZDVhZTJlZWM3MjhmNTIwYTVmZjQyYjM0MWJmZjU5YmI0ZWYwOGUwNDRkYiIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWVUwMjc2MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ1NTQxMDAwLCJpYXQiOjE3NDU0NzAyMzAsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NTQ3MDIzMCwic3ViIjoiYWNjZXNzX3Rva2VuIn0.kteY9nqb0atuGU3Y7_z0IVj2cOvwtktBfVqNE42yk98"; // 🔁 replace with actual token
+const alternateToken = "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCb0NjTVdCcjhxeGxucTdySHpvTnNDOGU4eDJ4LVphQlBtb1Z6UGF3X3Yxc2tPUHFJTHVpbDFGTlN2RU5INC04SVBveUI1dW5OeTlDbTdrX0pHcXdiVkZLWTI3UzNzWFNYWWlWZjJ1RTdZS1FPS3hhUT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlZjI1MzIwYmIxOWI1ZDVhZTJlZWM3MjhmNTIwYTVmZjQyYjM0MWJmZjU5YmI0ZWYwOGUwNDRkYiIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWVUwMjc2MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ1NTQxMDAwLCJpYXQiOjE3NDU0NzAyMzAsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NTQ3MDIzMCwic3ViIjoiYWNjZXNzX3Rva2VuIn0.kteY9nqb0atuGU3Y7_z0IVj2cOvwtktBfVqNE42yk98";
 
 const unknownSocket = fyersDataSocket.getInstance(alternateToken);
 
@@ -73,9 +73,9 @@ export const unsubscribeUnknownLtp = (symbol) => {
     if (unknownSymbolsSubscribed.has(upperSym)) {
         unknownSocket.unsubscribe([upperSym]);
         unknownSymbolsSubscribed.delete(upperSym); // 🧹 Clean up
-        console.log(`🔕 Unsubscribed ${upperSym} from unknownLtp`);
+        // console.log(`🔕 Unsubscribed ${upperSym} from unknownLtp`);
     } else {
-        console.log(`ℹ️ Symbol ${upperSym} was not subscribed via unknownLtp`);
+        // console.log(`ℹ️ Symbol ${upperSym} was not subscribed via unknownLtp`);
     }
 };
 

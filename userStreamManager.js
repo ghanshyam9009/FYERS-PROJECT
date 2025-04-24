@@ -191,7 +191,7 @@ function detectMap(symbol) {
 }
 
 function handleMissingSymbol(userId, symbol, map) {
-    console.warn(`⚠️ [${userId}] Missing data for symbol ${symbol} in map.`);
+    // console.warn(`⚠️ [${userId}] Missing data for symbol ${symbol} in map.`);
 }
 
 export function startUserStream(userId, ws) {
