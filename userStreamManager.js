@@ -1,6 +1,14 @@
-
+// const WebSocket = require('ws');
+// const { ltpMap1, ltpMap2, ltpMap3 } = require('./fyersLTPService');
 // const userStreams = {};
 // const userSubscriptions = {};
+
+
+// // const { ltpMap1, ltpMap2, ltpMap3 } = require('./fyersLTPService'); 
+
+// ltpMap2
+// ltpMap3
+// ltpMap1
 
 // const categories = ["Dashboard", "Watchlist", "Position", "Investment", "Buy-Sell", "Option-Chain"];
 
@@ -13,7 +21,6 @@
 //     "BSE:BANKEX-INDEX"
 // ]);
 
-// const { handleMissingSymbol } = require('./fyersHandler');
 
 // function initializeUser(userId) {
 //     if (!userSubscriptions[userId]) {
@@ -26,7 +33,6 @@
 
 // function detectMap(symbol, ltpMap1, ltpMap2, ltpMap3) {
 //     const sym = symbol.toUpperCase();
-
 //     if (exceptionalSymbols.has(sym)) return ltpMap3;
 //     if (sym.includes("NIFTY") && !sym.includes("BANK") && !sym.includes("FIN")) return ltpMap1;
 //     if (sym.includes("SENSEX")) return ltpMap1;
@@ -35,12 +41,8 @@
 //     return ltpMap3;
 // }
 
-// function startUserStream(userId, res, ltpMap1, ltpMap2, ltpMap3) {
+// function startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3) {
 //     initializeUser(userId);
-
-//     res.setHeader("Content-Type", "text/event-stream");
-//     res.setHeader("Cache-Control", "no-cache");
-//     res.setHeader("Connection", "keep-alive");
 
 //     const sendData = () => {
 //         const userData = userSubscriptions[userId];
@@ -54,7 +56,6 @@
 
 //                 if (!data) {
 //                     handleMissingSymbol(userId, upperSym, map);
-//                     console.log(`[DEBUG] 🔍 Lookup failed: ${upperSym}, attempting fetch from Fyers`);
 //                 }
 
 //                 return {
@@ -66,13 +67,15 @@
 //             });
 //         }
 
-//         res.write(`data: ${JSON.stringify(result)}\n\n`);
+//         if (ws.readyState === WebSocket.OPEN) {
+//             ws.send(JSON.stringify(result)); // Send data via WebSocket
+//         }
 //     };
 
 //     const interval = setInterval(sendData, 1000);
-//     userStreams[userId] = { res, interval };
+//     userStreams[userId] = { ws, interval };
 
-//     res.on("close", () => {
+//     ws.on("close", () => {
 //         clearInterval(interval);
 //         delete userStreams[userId];
 //     });
@@ -93,10 +96,18 @@
 //         const upperSym = sym.toUpperCase();
 //         userSubscriptions[userId][category].add(upperSym);
 
-//         // Check if symbol exists in current map
+//         // Check if symbol exists in the current map
 //         const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
-//         if (!map[upperSym]) {
-//             handleMissingSymbol(userId, upperSym, map);
+//         console.log(map)
+//         console.log(ltpMap3)
+//         // Ensure map is defined and contains the symbol
+//         if (map && map[upperSym]) {
+//             // Symbol exists in the map
+//             console.log(`Symbol ${upperSym} found in map.`);
+//         } else {
+//             // Handle missing symbol in map
+//             console.log("invalid symbol")
+
 //         }
 //     });
 // }
@@ -109,20 +120,20 @@
 //             const upperSym = sym.toUpperCase();
 //             userSubscriptions[userId][category].delete(upperSym);
 
-//             // Check if symbol exists in current map before removing
 //             const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
-//             if (!map[upperSym]) {
-//                 handleMissingSymbol(userId, upperSym, map);
+//             if (!map || !map[upperSym]) {
+//                 console.warn(`⚠️ Tried removing invalid/missing symbol: ${upperSym}`);
 //             }
 //         });
+//     } else {
+//         console.warn(`⚠️ No existing subscription for user: ${userId}, category: ${category}`);
 //     }
 // }
-
 
 // function cancelUserStream(userId) {
 //     if (userStreams[userId]) {
 //         clearInterval(userStreams[userId].interval);
-//         userStreams[userId].res.end();
+//         userStreams[userId].ws.close(); // Close WebSocket connection
 //         delete userStreams[userId];
 //     }
 
@@ -138,20 +149,19 @@
 //     cancelUserStream
 // };
 
+import WebSocket from 'ws';
+import { ltpMap1, ltpMap2, ltpMap3 } from './fyersLTPService.js';
+import { unknownLtp, unsubscribeUnknownLtp } from './unknownLtpService.js';
+
+// const WebSocket = require('ws');
+// const { ltpMap1, ltpMap2, ltpMap3 } = require('./fyersLTPService');
+// const { unknownLtp } = require("./unknownLtpService");
 
 
-const WebSocket = require('ws');
 const userStreams = {};
 const userSubscriptions = {};
 
 const categories = ["Dashboard", "Watchlist", "Position", "Investment", "Buy-Sell", "Option-Chain"];
-
-// const {
-//     initializeFyersConnection,
-//     ltpMap1,
-//     ltpMap2,
-//     ltpMap3
-// } = require("./fyersLTPService");
 
 const exceptionalSymbols = new Set([
     "NSE:NIFTY50-INDEX",
@@ -162,8 +172,6 @@ const exceptionalSymbols = new Set([
     "BSE:BANKEX-INDEX"
 ]);
 
-const { handleMissingSymbol } = require('./fyersHandler');
-
 function initializeUser(userId) {
     if (!userSubscriptions[userId]) {
         userSubscriptions[userId] = {};
@@ -173,23 +181,20 @@ function initializeUser(userId) {
     }
 }
 
-function detectMap(symbol, ltpMap1, ltpMap2, ltpMap3) {
+function detectMap(symbol) {
     const sym = symbol.toUpperCase();
-    // console.log(sym)
-    // console.log(sym)
     if (exceptionalSymbols.has(sym)) return ltpMap3;
     if (sym.includes("NIFTY") && !sym.includes("BANK") && !sym.includes("FIN")) return ltpMap1;
     if (sym.includes("SENSEX")) return ltpMap1;
     if (sym.includes("BANKNIFTY") || sym.includes("FINNIFTY")) return ltpMap2;
-
-
-
-    // console.log( "yaii",ltpMap3)
-    // console.log( "yaii",ltpMap3)
     return ltpMap3;
 }
 
-function startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3) {
+function handleMissingSymbol(userId, symbol, map) {
+    console.warn(`⚠️ [${userId}] Missing data for symbol ${symbol} in map.`);
+}
+
+export function startUserStream(userId, ws) {
     initializeUser(userId);
 
     const sendData = () => {
@@ -199,13 +204,11 @@ function startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3) {
         for (const [category, symbols] of Object.entries(userData)) {
             result[category] = Array.from(symbols).map(sym => {
                 const upperSym = sym.toUpperCase();
-                const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
+                const map = detectMap(upperSym);
                 const data = map[upperSym];
 
                 if (!data) {
                     handleMissingSymbol(userId, upperSym, map);
-                    // console.log(`[DEBUG] 🔍 Lookup failed: ${upperSym}, attempting fetch from Fyers`);
-                    // console.log(`[DEBUG] 🔍 Lookup failed: ${upperSym}, attempting fetch from Fyers`);
                 }
 
                 return {
@@ -218,7 +221,7 @@ function startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3) {
         }
 
         if (ws.readyState === WebSocket.OPEN) {
-            ws.send(JSON.stringify(result)); // Send data via WebSocket
+            ws.send(JSON.stringify(result));
         }
     };
 
@@ -231,12 +234,8 @@ function startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3) {
     });
 }
 
-function subscribeSymbols(userId, category, symbols, ltpMap1, ltpMap2, ltpMap3) {
+export function subscribeSymbols(userId, category, symbols) {
     initializeUser(userId);
-
-    if (!userSubscriptions[userId]) {
-        userSubscriptions[userId] = {};
-    }
 
     if (!userSubscriptions[userId][category]) {
         userSubscriptions[userId][category] = new Set();
@@ -246,23 +245,28 @@ function subscribeSymbols(userId, category, symbols, ltpMap1, ltpMap2, ltpMap3) 
         const upperSym = sym.toUpperCase();
         userSubscriptions[userId][category].add(upperSym);
 
-        // Check if symbol exists in the current map
-        const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
-        // console.log(map)
-        // console.log(ltpMap3)
-        // Ensure map is defined and contains the symbol
-        if (map && map[upperSym]) {
-            // Symbol exists in the map
-            // console.log(`Symbol ${upperSym} found in map.`);
+        const map = detectMap(upperSym);
+        const exists = map && map[upperSym];
+
+        if (exists) {
+            console.log(`✅ Symbol ${upperSym} found in correct map.`);
         } else {
-            // Handle missing symbol in map
-            // console.log("invalid symbol")
-            // handleMissingSymbol(userId, upperSym, map);
+            console.log(`❌ Invalid symbol: ${upperSym} — fetching from alternate Fyers socket...`);
+            try {
+                // // await unknownLtp(upperSym);
+                async function processUnknownSymbol(upperSym) {
+                    await unknownLtp(upperSym);
+                }
+                
+                processUnknownSymbol(upperSym)
+                console.log(`✅ Symbol ${upperSym} fetched and added.`);
+            } catch (err) {
+                console.error(`❌ Could not fetch ${upperSym}: ${err.message}`);
+            }
         }
     });
 }
-
-function removeSymbols(userId, category, symbols, ltpMap1, ltpMap2, ltpMap3) {
+export function removeSymbols(userId, category, symbols) {
     initializeUser(userId);
 
     if (userSubscriptions[userId] && userSubscriptions[userId][category]) {
@@ -270,20 +274,22 @@ function removeSymbols(userId, category, symbols, ltpMap1, ltpMap2, ltpMap3) {
             const upperSym = sym.toUpperCase();
             userSubscriptions[userId][category].delete(upperSym);
 
-            const map = detectMap(upperSym, ltpMap1, ltpMap2, ltpMap3);
+            const map = detectMap(upperSym);
             if (!map || !map[upperSym]) {
-                // console.warn(`⚠️ Tried removing invalid/missing symbol: ${upperSym}`);
+                console.warn(`⚠️ Tried removing invalid/missing symbol: ${upperSym}`);
+                unsubscribeUnknownLtp(upperSym); // 🆕 Attempt to stop from Fyers unknown
             }
         });
     } else {
-        // console.warn(`⚠️ No existing subscription for user: ${userId}, category: ${category}`);
+        console.warn(`⚠️ No existing subscription for user: ${userId}, category: ${category}`);
     }
 }
 
-function cancelUserStream(userId) {
+
+export function cancelUserStream(userId) {
     if (userStreams[userId]) {
         clearInterval(userStreams[userId].interval);
-        userStreams[userId].ws.close(); // Close WebSocket connection
+        userStreams[userId].ws.close();
         delete userStreams[userId];
     }
 
@@ -292,7 +298,7 @@ function cancelUserStream(userId) {
     }
 }
 
-module.exports = {
+export default {
     startUserStream,
     subscribeSymbols,
     removeSymbols,

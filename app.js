@@ -1,81 +1,10 @@
+import express from "express";
+import cors from "cors";
+import bodyParser from "body-parser";
+import { WebSocketServer } from "ws"; // Correct import for ES modules
 
-// const express = require("express");
-// const cors = require("cors");
-// const bodyParser = require("body-parser");
-
-// const {
-//     initializeFyersConnection,
-//     ltpMap1,
-//     ltpMap2,
-//     ltpMap3
-// } = require("./fyersLTPService");
-
-// const {
-//     startUserStream,
-//     subscribeSymbols,
-//     removeSymbols,
-//     cancelUserStream
-// } = require("./userStreamManager");
-
-// const app = express();
-// const PORT = 3000;
-
-// app.use(cors());
-// app.use(bodyParser.json());
-
-// app.get("/get-sse/:userId", (req, res) => {
-//     const userId = req.params.userId;
-//     startUserStream(userId, res, ltpMap1, ltpMap2, ltpMap3);
-// });
-
-// app.post("/subscribe", (req, res) => {
-//     const { userId, category, symbols } = req.body;
-//     if (!userId || !category || !symbols?.length) {
-//         return res.status(400).json({ error: "Missing userId, category, or symbols" });
-//     }
-//     subscribeSymbols(userId, category, symbols);
-//     res.json({ message: "Subscribed successfully" });
-// });
-
-// app.post("/unsubscribe", (req, res) => {
-//     const { userId, category, symbols } = req.body;
-//     if (!userId || !category || !symbols?.length) {
-//         return res.status(400).json({ error: "Missing userId, category, or symbols" });
-//     }
-//     removeSymbols(userId, category, symbols);
-//     res.json({ message: "Removed successfully" });
-// });
-
-// app.delete("/cancel-sse/:userId", (req, res) => {
-//     const userId = req.params.userId;
-//     cancelUserStream(userId);
-//     res.json({ message: "SSE cancelled successfully" });
-// });
-
-// app.listen(PORT, () => {
-//     console.log(`Server running on http://localhost:${PORT}`);
-//     initializeFyersConnection();
-// });
-
-
-const express = require("express");
-const cors = require("cors");
-const bodyParser = require("body-parser");
-const WebSocket = require("ws");
-
-const {
-    initializeFyersConnection,
-    ltpMap1,
-    ltpMap2,
-    ltpMap3
-} = require("./fyersLTPService");
-
-const {
-    startUserStream,
-    subscribeSymbols,
-    removeSymbols,
-    cancelUserStream
-} = require("./userStreamManager");
+import { initializeFyersConnection, ltpMap1, ltpMap2, ltpMap3 } from "./fyersLTPService.js";
+import { startUserStream, subscribeSymbols, removeSymbols, cancelUserStream } from "./userStreamManager.js";
 
 const app = express();
 const PORT = 3000;
@@ -84,10 +13,9 @@ app.use(cors());
 app.use(bodyParser.json());
 
 // WebSocket server setup
-const wss = new WebSocket.Server({ noServer: true });
+const wss = new WebSocketServer({ noServer: true }); // Use WebSocketServer instead of WebSocket.Server
 
 wss.on("connection", (ws, req) => {
-    // const userId = req.params.userId;
     const userId = req.url.split("/")[2];
     startUserStream(userId, ws, ltpMap1, ltpMap2, ltpMap3);
 });
@@ -128,4 +56,3 @@ app.server.on("upgrade", (request, socket, head) => {
         wss.emit("connection", ws, request);
     });
 });
-

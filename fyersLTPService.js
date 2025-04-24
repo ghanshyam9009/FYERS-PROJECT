@@ -1,8 +1,13 @@
-const fs = require("fs");
-const csv = require("csv-parser");
-const { fyersDataSocket } = require("fyers-api-v3");
+// const fs = require("fs");
+// const csv = require("csv-parser");
+// const { fyersDataSocket } = require("fyers-api-v3");
 
-const fyersSocket = fyersDataSocket.getInstance("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIl0sImF0X2hhc2giOiJnQUFBQUFCb0IwQWMxT2s5Vkp3SDZQNGVRd0R3TURXZWRGOF9FUmF2R1BKSUdvbGtWVjI2c0NqRmQzb1RfZDh0MTNSTEN1Tk9pQnZsZl9Nc21IdlZGSEdiRG1CZ0hsM1VyWXlXUnhGZU41ODVydHVoNEdHdzlybz0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlMWI3MmYyOGY4ODAwMTkzMTRhNmFhODI3ZjQ4YzBmNDNmZGNjZDRhZWY3ZGQ1ODc0YWU5MDI3ZCIsImlzRGRwaUVuYWJsZWQiOiJZIiwiaXNNdGZFbmFibGVkIjoiWSIsImZ5X2lkIjoiWFMwNzgwMyIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ1MzY4MjAwLCJpYXQiOjE3NDUzMDU2MjgsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NTMwNTYyOCwic3ViIjoiYWNjZXNzX3Rva2VuIn0.cncQ1q2-txpN1whPcuqVo6MJz6moZjJ4GayTchyTyEk");
+import fs from "fs";
+import csv from "csv-parser";
+import { fyersDataSocket } from "fyers-api-v3";
+
+
+const fyersSocket = fyersDataSocket.getInstance("eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCb0NjTVdCcjhxeGxucTdySHpvTnNDOGU4eDJ4LVphQlBtb1Z6UGF3X3Yxc2tPUHFJTHVpbDFGTlN2RU5INC04SVBveUI1dW5OeTlDbTdrX0pHcXdiVkZLWTI3UzNzWFNYWWlWZjJ1RTdZS1FPS3hhUT0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiJlZjI1MzIwYmIxOWI1ZDVhZTJlZWM3MjhmNTIwYTVmZjQyYjM0MWJmZjU5YmI0ZWYwOGUwNDRkYiIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiWVUwMjc2MSIsImFwcFR5cGUiOjEwMCwiZXhwIjoxNzQ1NTQxMDAwLCJpYXQiOjE3NDU0NzAyMzAsImlzcyI6ImFwaS5meWVycy5pbiIsIm5iZiI6MTc0NTQ3MDIzMCwic3ViIjoiYWNjZXNzX3Rva2VuIn0.kteY9nqb0atuGU3Y7_z0IVj2cOvwtktBfVqNE42yk98");
 
 const ltpMap1 = {};
 const ltpMap2 = {};
@@ -74,9 +79,31 @@ async function initializeFyersConnection() {
     handleSocket(allSymbols);
 }
 
-module.exports = {
+// Initialize connection
+initializeFyersConnection();
+
+// Periodically print the LTP Maps
+// setInterval(() => {
+//     console.clear();
+//     console.log("========== 📈 ltpMap1 (NIFTY / SENSEX) ==========");
+//     // console.log(JSON.stringify(ltpMap1, null, 2));
+//     console.log("\n========== 🏦 ltpMap2 (BANKNIFTY / FINNIFTY) ==========");
+//     // console.log(JSON.stringify(ltpMap2, null, 2));
+//     console.log("\n========== 📊 ltpMap3 (Others / Exceptional) ==========");
+//     // console.log(JSON.stringify(ltpMap3, null, 2));
+// }, 5000);
+
+// module.exports = {
+//     initializeFyersConnection,
+//     ltpMap1,
+//     ltpMap2,
+//     ltpMap3
+// };
+
+export {
     initializeFyersConnection,
     ltpMap1,
     ltpMap2,
     ltpMap3
-};
+  };
+  
