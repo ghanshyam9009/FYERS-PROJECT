@@ -1,6 +1,6 @@
 // const { fyersDataSocket } = require("fyers-api-v3");
 // const { ltpMap1, ltpMap2, ltpMap3 } = require("./fyersLTPService");
-
+//  kfbnkflnbl
 import { fyersDataSocket } from "fyers-api-v3";
 import { ltpMap1, ltpMap2, ltpMap3 } from "./fyersLTPService.js";
 
