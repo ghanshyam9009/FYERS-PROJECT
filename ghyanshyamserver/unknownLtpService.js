@@ -73,9 +73,9 @@ export const unsubscribeUnknownLtp = (symbol) => {
     if (unknownSymbolsSubscribed.has(upperSym)) {
         unknownSocket.unsubscribe([upperSym]);
         unknownSymbolsSubscribed.delete(upperSym); // 🧹 Clean up
-        // console.log(`🔕 Unsubscribed ${upperSym} from unknownLtp`);
+        console.log(`🔕 Unsubscribed ${upperSym} from unknownLtp`);
     } else {
-        // console.log(`ℹ️ Symbol ${upperSym} was not subscribed via unknownLtp`);
+        console.log(`ℹ️ Symbol ${upperSym} was not subscribed via unknownLtp`);
     }
 };
 
