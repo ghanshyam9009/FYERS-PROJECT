@@ -4,7 +4,7 @@ import { fyersDataSocket } from "fyers-api-v3";
 
 
   const fyersSocket = fyersDataSocket.getInstance(
-    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCb2IxNy1MY3RzamxOV3pmLTFLcjY2VzjY2Vzc190b2tlbiJ9.T6bLHIhD3wFBWtgpPj72UqRinNjOfSTDs7ZS023umHM",
+    "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJhdWQiOlsiZDoxIiwiZDoyIiwieDowIiwieDoxIiwieDoyIl0sImF0X2hhc2giOiJnQUFBQUFCb2IxNy1MY3RzamxOV3pmLTFLcU05MVVqakxCS3F6Zk5WaDRVaVRlcEoxbmR1SGtYM3hCQ2pCaS1NQkw3ejVDNHNZSkhrZGZQeDZrazQzSzdVeWdxYmRiSmpERUZydHBTVFFZaVlMZEZVM1dnVGNrND0iLCJkaXNwbGF5X25hbWUiOiIiLCJvbXMiOiJLMSIsImhzbV9rZXkiOiI0MmQyYWYzZDIyMmZjOGJjMWUwMWViNDVmMmU3ZDhkZWFkMjZjYzM2YWY1YjU0NzY3ZDNkMTNlNyIsImlzRGRwaUVuYWJsZWQiOiJOIiwiaXNNdGZFbmFibGVkIjoiTiIsImZ5X2lkIjoiRkFBMTkyNTAiLCJhcHBUeXBlIjoxMDAsImV4cCI6MTc1MzQwMzQwMCwiaWF0IjoxNzUyMTI5Mjc4LCJpc3MiOiJhcGkuZnllcnMuaW4iLCJuYmYiOjE3NTIxMjkyNzgsInN1YiI6InJlZnJlc2hfdG9rZW4ifQ.2iHHLqwt3sYXeeXS0NvI_3yWIjzE52zbLvkPQJ1AYQo",
     "",           // log path can be empty or omitted
     false          // ✅ true disables logging
   );
